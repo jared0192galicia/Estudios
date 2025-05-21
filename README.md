@@ -26,7 +26,7 @@ Aplicación web desarrollada con [Next.js 15](https://nextjs.org/), [React 19](h
 ### 1. Clonar el repositorio
 
 ``` bash
-git clone https://github.com/tu-usuario/nombre-del-repo.git
+git clone https://github.com/jared0192galicia/Estudios.git
 cd estudios
 ```
 
