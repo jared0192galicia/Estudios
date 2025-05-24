@@ -9,22 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.7",
     "axios": "^1.9.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "next": "15.3.2",
+    "postcss": "^8.5.3",
     "prime-react": "^1.0.0",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.5",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
-    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }
