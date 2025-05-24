@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputText';
+import api from '@/services/axios';
 
 interface loginForm {
   user?: string;
@@ -18,6 +19,10 @@ export default function Login() {
 
   const fetchLogin = async () => {
     try {
+      const response = await api.post('/sesion/login', {
+        user: form.user,
+        password: form.password,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -26,7 +31,7 @@ export default function Login() {
   return (
     <main className="">
       <section className="flex flex-col items-center gap-3">
-     <h1>Entrar</h1>
+        <h1>Entrar</h1>
         <InputText
           value={form.user}
           onChange={(e) => change('user', e.target.value)}
