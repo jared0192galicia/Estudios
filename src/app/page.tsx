@@ -2,7 +2,6 @@
 
 import 'tailwindcss';
 import React from 'react';
-import { Button } from 'primereact/button';
 import Login from '@/components/auth/login';
 
 export default function Home() {
