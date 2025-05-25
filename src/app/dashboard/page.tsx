@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
@@ -9,38 +9,91 @@ import { Column } from 'primereact/column';
 import 'primereact/resources/themes/lara-light-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { FileUpload } from 'primereact/fileupload';
+import { Toast } from 'primereact/toast';
+import { AxiosResponse } from 'axios';
+import api from '@/services/axios';
+
+type Loaders = {
+  table: boolean;
+  excel: boolean;
+  pdf: boolean;
+};
 
 export default function DashboardPage() {
   const [selectedItems, setSelectedItems] = useState<any>([]);
   const [filters, setFilters] = useState({});
-  const [data, setData] = useState(
-    Array.from({ length: 50 }).map((_, i) => ({
-      id: i + 1,
-      name: `Nombre ${i + 1}`,
-      email: `email${i + 1}@unsis.edu.mx`,
-      carrera: 'Enfermería',
-      semestre: Math.floor(Math.random() * 8) + 1,
-      promedio: (Math.random() * 10).toFixed(2),
-      fechaRegistro: new Date().toLocaleDateString(),
-      estado: i % 2 === 0 ? 'Activo' : 'Inactivo',
-      genero: i % 2 === 0 ? 'Femenino' : 'Masculino',
-      curp: `CURP${i + 1}`,
-      matricula: `UNSIS${1000 + i}`,
-    }))
-  );
+  const [data, setData] = useState([{}]);
+  const toast = useRef(null);
+  const [loaders, setLoaders] = useState<Loaders>({
+    table: true,
+    excel: false,
+    pdf: false,
+  });
 
-  const handleExportPDF = () => {
-    alert(`Exportando ${selectedItems.length} registro(s) a PDF...`);
-    // Lógica real de exportación a PDF va aquí
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const changeLoader = (key: keyof Loaders, value: boolean) => 
+    setLoaders((prev) => ({ ...prev, [key]: value }));
+
+  const handleExcelUpload = async (e: any) => {
+    const formData = new FormData();
+    formData.append('file', e.files[0]);
+    try {
+      changeLoader('excel', true);
+      const response: AxiosResponse = await api.post(
+        '/dashboard/upload-excel',
+        formData
+      );
+      onUpload();
+    } catch (error) {
+      console.log('Catch Error: ', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Algo salió mal al cargar los datos',
+        life: 3000,
+      });
+    } finally {
+      changeLoader('excel', false);
+    }
   };
 
-  const handleExcelUpload = () =>
-    alert('Función de carga de Excel no implementada.');
+  const fetchData = async () => {
+    try {
+      changeLoader('table', true);
+      const response: AxiosResponse = await api.get('/dashboard/data');
+      setData(response.data);
+    } catch (error) {
+      console.log('Catch Error: ', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Algo salió mal al cargar los datos',
+        life: 3000,
+      });
+    } finally {
+      changeLoader('table', false);
+    }
+  };
+
   const handleExcelDownload = () =>
     alert('Función de descarga de Excel no implementada.');
   const handleLogout = () => alert('Cerrar sesión');
 
-  const toolbarLeft = (
+  const onUpload = () => {
+    toast.current.show({
+      severity: 'success',
+      summary: 'Completado',
+      detail: 'Archivo subido correctamente',
+      life: 3000,
+    });
+    fetchData();
+  };
+
+  const toolbarEnd = (
     <div className="flex gap-2">
       <Button
         label="Cerrar sesión"
@@ -51,12 +104,17 @@ export default function DashboardPage() {
     </div>
   );
 
-  const toolbarRight = (
+  const toolbarStart = (
     <div className="flex gap-2 bg-unsis-olive p-2 rounded">
-      <Button
-        label="Cargar Excel"
-        icon="pi pi-upload"
-        onClick={handleExcelUpload}
+      <FileUpload
+        mode="basic"
+        name="demo[]"
+        accept=".xlsx, .ods"
+        maxFileSize={1000000}
+        uploadHandler={handleExcelUpload}
+        customUpload
+        auto
+        chooseLabel="Subir Excel"
       />
       <Button
         label="Descargar Excel"
@@ -67,60 +125,67 @@ export default function DashboardPage() {
         label="Exportar PDF"
         icon="pi pi-file-pdf"
         className="p-button-warning"
-        onClick={handleExportPDF}
+        // onClick={handleExcelUpload}
         disabled={selectedItems.length === 0}
       />
     </div>
   );
 
   const columns = [
-    { field: 'id', header: 'ID' },
-    { field: 'name', header: 'Nombre' },
-    { field: 'email', header: 'Email' },
-    { field: 'carrera', header: 'Carrera' },
-    { field: 'semestre', header: 'Semestre' },
-    { field: 'promedio', header: 'Promedio' },
-    { field: 'fechaRegistro', header: 'Registro' },
-    { field: 'estado', header: 'Estado' },
-    { field: 'genero', header: 'Género' },
-    { field: 'curp', header: 'CURP' },
-    { field: 'matricula', header: 'Matrícula' },
+    { field: 'matricula', header: 'Matricula' },
+    { field: 'apPaterno', header: 'Apellido Paterno' },
+    { field: 'apMaterno', header: 'Apellido Materno' },
+    { field: 'nombres', header: 'Nombres' },
+    { field: 'edad', header: 'Edad' },
+    { field: 'sexo', header: 'Sexo' },
+    { field: 'fecha', header: 'Fecha' },
+    { field: 'cocaina', header: 'Cocaina' },
+    { field: 'anfetamina', header: 'Anfetamina' },
+    { field: 'metanfetamina', header: 'Metanfetamina' },
+    { field: 'opioides', header: 'Opioides' },
+    { field: 'cannabis', header: 'Cannabis' },
   ];
 
   return (
     <div className="p-4 bg-unsis-black min-h-screen">
-      <Toolbar className="mb-4" start={toolbarLeft} end={toolbarRight} />
+      <Toast ref={toast}></Toast>
+      <Toolbar className="mb-4" start={toolbarStart} end={toolbarEnd} />
 
-      <div className="card">
-        <DataTable
-          value={data}
-          selection={selectedItems}
-          onSelectionChange={(e) => setSelectedItems(e.value)}
-          paginator
-          rows={10}
-          dataKey="id"
-          filters={filters}
-          filterDisplay="row"
-          showGridlines
-          responsiveLayout="scroll"
-          selectionMode="checkbox"
-        >
+      {/* <div className="h-full overflow-auto"> */}
+      <DataTable
+        loading={loaders.table}
+        size='small'
+        value={data}
+        selection={selectedItems}
+        onSelectionChange={(e) => setSelectedItems(e.value)}
+        rows={10}
+        dataKey="matricula"
+        scrollHeight="600px"
+        virtualScrollerOptions={{ itemSize: 46 }}
+        emptyMessage="Sin resultados"
+        scrollable
+        filters={filters}
+        filterDisplay="row"
+        showGridlines
+        selectionMode="checkbox"
+      >
+        <Column
+          selectionMode="multiple"
+          headerStyle={{ width: '3rem' }}
+        ></Column>
+        {columns.map((col) => (
           <Column
-            selectionMode="multiple"
-            headerStyle={{ width: '3rem' }}
-          ></Column>
-          {columns.map((col) => (
-            <Column
-              key={col.field}
-              field={col.field}
-              header={col.header}
-              filter
-              filterPlaceholder={`Buscar ${col.header.toLowerCase()}`}
-              style={{ minWidth: '150px' }}
-            />
-          ))}
-        </DataTable>
-      </div>
+            key={col.field}
+            field={col.field}
+            header={col.header}
+            filter
+            filterMatchMode="contains"
+            filterPlaceholder={`Buscar ${col.header.toLowerCase()}`}
+            style={{ minWidth: '150px' }}
+          />
+        ))}
+      </DataTable>
     </div>
+    // </div>
   );
 }

@@ -5,7 +5,7 @@ export function getTokenDecoded(): any {
 
   const token: any = document.cookie
     .split('; ')
-    .find((row) => row.startsWith('accessToken='))
+    .find((row) => row.startsWith('unsisToken='))
     ?.split('=')[1];
 
   const decodedToken = jwt.decode(token);
@@ -18,7 +18,7 @@ export function getToken(): string | null {
 
   const token = document.cookie
     .split('; ')
-    .find((row) => row.startsWith('accessToken='))
+    .find((row) => row.startsWith('unsisToken='))
     ?.split('=')[1];
 
   return token || null;

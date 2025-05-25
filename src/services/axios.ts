@@ -3,7 +3,7 @@ import { getToken } from './getToken';
 import router from 'next/router';
 import Cookies from 'js-cookie';
 
-const baseURL = 'http://localhost:3000/';
+const baseURL = 'http://localhost:3001/';
 
 // Crea una instancia de Axios
 const api: AxiosInstance = axios.create({
@@ -32,7 +32,7 @@ api.interceptors.response.use(
   (error: any) => {
     // Handle error responses here
     if (error.response.status === 401) {
-     Cookies.remove('accessToken');
+     Cookies.remove('unsisToken');
       router.push('/');
     }
 
