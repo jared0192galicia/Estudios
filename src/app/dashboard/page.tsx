@@ -5,6 +5,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import Cookies from 'js-cookie';
 
 import 'primereact/resources/themes/lara-light-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -13,6 +14,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { Toast } from 'primereact/toast';
 import { AxiosResponse } from 'axios';
 import api from '@/services/axios';
+import { useRouter } from 'next/navigation';
 
 type Loaders = {
   table: boolean;
@@ -22,20 +24,20 @@ type Loaders = {
 
 export default function DashboardPage() {
   const [selectedItems, setSelectedItems] = useState<any>([]);
-  const [filters, setFilters] = useState({});
   const [data, setData] = useState([{}]);
-  const toast = useRef(null);
   const [loaders, setLoaders] = useState<Loaders>({
     table: true,
     excel: false,
     pdf: false,
   });
+  const toast = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const changeLoader = (key: keyof Loaders, value: boolean) => 
+  const changeLoader = (key: keyof Loaders, value: boolean) =>
     setLoaders((prev) => ({ ...prev, [key]: value }));
 
   const handleExcelUpload = async (e: any) => {
@@ -43,11 +45,8 @@ export default function DashboardPage() {
     formData.append('file', e.files[0]);
     try {
       changeLoader('excel', true);
-      const response: AxiosResponse = await api.post(
-        '/dashboard/upload-excel',
-        formData
-      );
-      onUpload();
+      await api.post('/dashboard/upload-excel', formData);
+      // onUpload();
     } catch (error) {
       console.log('Catch Error: ', error);
       toast.current.show({
@@ -77,11 +76,15 @@ export default function DashboardPage() {
     } finally {
       changeLoader('table', false);
     }
+  }; 
+  const handleLogout = () => {
+    // logout functionallity, remove cookies and redirect to login page
+    Cookies.remove('unsisToken');
+    router.push('/');
   };
 
   const handleExcelDownload = () =>
     alert('Función de descarga de Excel no implementada.');
-  const handleLogout = () => alert('Cerrar sesión');
 
   const onUpload = () => {
     toast.current.show({
@@ -94,7 +97,7 @@ export default function DashboardPage() {
   };
 
   const toolbarEnd = (
-    <div className="flex gap-2">
+    <div className="flex gap-2 items-left">
       <Button
         label="Cerrar sesión"
         icon="pi pi-sign-out"
@@ -105,14 +108,14 @@ export default function DashboardPage() {
   );
 
   const toolbarStart = (
-    <div className="flex gap-2 bg-unsis-olive p-2 rounded">
+    <div className="flex gap-2 bg-unsis-olive p-2 rounded flex-wrap items-center">
       <FileUpload
         mode="basic"
-        name="demo[]"
         accept=".xlsx, .ods"
         maxFileSize={1000000}
         uploadHandler={handleExcelUpload}
         customUpload
+        onUpload={onUpload}
         auto
         chooseLabel="Subir Excel"
       />
@@ -154,17 +157,16 @@ export default function DashboardPage() {
       {/* <div className="h-full overflow-auto"> */}
       <DataTable
         loading={loaders.table}
-        size='small'
+        size="small"
         value={data}
         selection={selectedItems}
         onSelectionChange={(e) => setSelectedItems(e.value)}
         rows={10}
-        dataKey="matricula"
+        dataKey="id"
         scrollHeight="600px"
         virtualScrollerOptions={{ itemSize: 46 }}
         emptyMessage="Sin resultados"
         scrollable
-        filters={filters}
         filterDisplay="row"
         showGridlines
         selectionMode="checkbox"
@@ -177,6 +179,7 @@ export default function DashboardPage() {
           <Column
             key={col.field}
             field={col.field}
+            showFilterMenu={false}
             header={col.header}
             filter
             filterMatchMode="contains"
