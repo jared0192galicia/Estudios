@@ -22,6 +22,12 @@ export default function Login() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      fetchLogin();
+    }
+  };  
+
   const fetchLogin = async () => {
     try {
       const response = await api.post('/sesion/login', {
@@ -62,6 +68,8 @@ export default function Login() {
             value={form.user}
             onChange={(e) => change('user', e.target.value)}
             placeholder="Usuario"
+            onKeyDown={handleKeyDown}
+            autoFocus
           />
         </div>
 
@@ -73,6 +81,8 @@ export default function Login() {
             value={form.password}
             onChange={(e) => change('password', e.target.value)}
             placeholder="Contraseña"
+            type='password'
+            onKeyDown={handleKeyDown}
           />
         </div>
 
