@@ -52,5 +52,5 @@ async function validateToken(request: any) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  // matcher: ['/dashboard/:path*'],
 };
