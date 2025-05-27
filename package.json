@@ -17,6 +17,7 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",
     "next": "15.3.2",
+    "pdfmake": "^0.2.20",
     "postcss": "^8.5.3",
     "prime-react": "^1.0.0",
     "primeicons": "^7.0.0",

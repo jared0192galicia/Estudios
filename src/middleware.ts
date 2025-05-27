@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import Cookies from 'js-cookie';
 
 const baseURL = 'http://localhost:3001/';
 
@@ -47,10 +48,11 @@ async function validateToken(request: any) {
     return response.status == 200;
   } catch (error) {
     console.log(error);
+    Cookies.remove('unsisToken');
     return false;
   }
 }
 
 export const config = {
-  // matcher: ['/dashboard/:path*'],
+  matcher: ['/dashboard/:path*'],
 };

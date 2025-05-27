@@ -7,6 +7,7 @@ import api from '@/services/axios';
 import { Toast } from 'primereact/toast';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { FloatLabel } from 'primereact/floatlabel';
 
 interface loginForm {
   user?: string;
@@ -63,27 +64,31 @@ export default function Login() {
         {/* Campo de Usuario */}
         <div className="flex items-center gap-3 w-full max-w-md">
           <i className="pi pi-user" style={{ fontSize: '2rem' }}></i>
-          <InputText
-            className="flex-1"
-            value={form.user}
-            onChange={(e) => change('user', e.target.value)}
-            placeholder="Usuario"
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
+          <FloatLabel>
+            <InputText
+              className="flex-1"
+              value={form.user}
+              onChange={(e) => change('user', e.target.value)}
+              onKeyDown={handleKeyDown}
+              autoFocus
+            />
+            <label htmlFor="username">Usuario</label>
+          </FloatLabel>
         </div>
 
         {/* Campo de Contraseña */}
         <div className="flex items-center gap-3 w-full max-w-md">
           <i className="pi pi-lock" style={{ fontSize: '2rem' }}></i>
-          <InputText
-            className="flex-1"
-            value={form.password}
-            onChange={(e) => change('password', e.target.value)}
-            placeholder="Contraseña"
-            type='password'
-            onKeyDown={handleKeyDown}
-          />
+          <FloatLabel>
+            <InputText
+              className="flex-1"
+              value={form.password}
+              onChange={(e) => change('password', e.target.value)}
+              type="password"
+              onKeyDown={handleKeyDown}
+            />{' '}
+            <label htmlFor="username">Contraseña</label>
+          </FloatLabel>
         </div>
 
         {/* Botón */}
