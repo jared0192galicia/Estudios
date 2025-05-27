@@ -15,6 +15,7 @@ import { Toast } from 'primereact/toast';
 import { AxiosResponse } from 'axios';
 import api from '@/services/axios';
 import { useRouter } from 'next/navigation';
+import { exportToPDF } from '@/services/report';
 
 type Loaders = {
   table: boolean;
@@ -76,7 +77,7 @@ export default function DashboardPage() {
     } finally {
       changeLoader('table', false);
     }
-  }; 
+  };
   const handleLogout = () => {
     // logout functionallity, remove cookies and redirect to login page
     Cookies.remove('unsisToken');
@@ -128,7 +129,7 @@ export default function DashboardPage() {
         label="Exportar PDF"
         icon="pi pi-file-pdf"
         className="p-button-warning"
-        // onClick={handleExcelUpload}
+        onClick={() => exportToPDF(selectedItems)}
         disabled={selectedItems.length === 0}
       />
     </div>
