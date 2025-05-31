@@ -81,7 +81,7 @@ export default function DashboardPage() {
   const handleLogout = () => {
     // logout functionallity, remove cookies and redirect to login page
     Cookies.remove('unsisToken');
-    router.push('/');
+    router.push('/entrar');
   };
 
   const handleExcelDownload = () =>
@@ -129,7 +129,12 @@ export default function DashboardPage() {
         label="Exportar PDF"
         icon="pi pi-file-pdf"
         className="p-button-warning"
-        onClick={() => exportToPDF(selectedItems)}
+        loading={loaders.pdf}
+        onClick={async () => {
+          changeLoader('pdf', true);
+          await exportToPDF(selectedItems);
+          changeLoader('pdf', false);
+        }}
         disabled={selectedItems.length === 0}
       />
     </div>

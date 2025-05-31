@@ -42,7 +42,7 @@ export default function Login() {
         const { accessToken } = response.data;
 
         Cookies.set('unsisToken', accessToken);
-        router.push('/dashboard');
+        router.push('/');
       }
     } catch (error) {
       console.log(error);

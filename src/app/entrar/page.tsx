@@ -2,8 +2,8 @@
 
 import 'tailwindcss';
 import React from 'react';
-import DashboardPage from '@/components/dashboard/page';
+import Login from '@/components/auth/login';
 
 export default function Home() {
-  return <DashboardPage />;
+  return <Login />;
 }
