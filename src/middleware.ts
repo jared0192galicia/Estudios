@@ -4,14 +4,6 @@ import Cookies from 'js-cookie';
 const baseURL = 'http://localhost:3001/';
 
 export async function middleware(request: NextRequest) {
-  const isAuthenticated = request.cookies.get('unsisToken')?.value;
-
-  // if (!isAuthenticated && request.nextUrl.pathname.startsWith('/entrar')) {
-  //   console.log('1');
-
-  //   return NextResponse.redirect(new URL('/entrar', request.url));
-  // }
-
   if (request.nextUrl.pathname == '/entrar') {
     const response: any = await validateToken(request);
 
@@ -44,7 +36,7 @@ async function validateToken(request: any) {
       },
       body: JSON.stringify({ token }),
     });
-    
+
     return response.status == 200;
   } catch (error) {
     console.log(error);

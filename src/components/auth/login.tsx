@@ -62,7 +62,7 @@ export default function Login() {
         <h1 className="text-4xl">Iniciar sesión</h1>
 
         {/* Campo de Usuario */}
-        <div className="flex items-center gap-3 w-full max-w-md">
+        <div className="flex items-center gap-3 w-full max-w-md justify-center">
           <i className="pi pi-user" style={{ fontSize: '2rem' }}></i>
           <FloatLabel>
             <InputText
@@ -77,7 +77,7 @@ export default function Login() {
         </div>
 
         {/* Campo de Contraseña */}
-        <div className="flex items-center gap-3 w-full max-w-md">
+        <div className="flex items-center gap-3 w-full max-w-md justify-center">
           <i className="pi pi-lock" style={{ fontSize: '2rem' }}></i>
           <FloatLabel>
             <InputText
