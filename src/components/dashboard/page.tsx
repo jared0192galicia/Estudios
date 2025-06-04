@@ -16,6 +16,7 @@ import { AxiosResponse } from 'axios';
 import api from '@/services/axios';
 import { useRouter } from 'next/navigation';
 import { exportToPDF } from '@/services/report';
+import { InputSwitch } from 'primereact/inputswitch';
 
 type Loaders = {
   table: boolean;
@@ -26,6 +27,7 @@ type Loaders = {
 export default function DashboardPage() {
   const [selectedItems, setSelectedItems] = useState<any>([]);
   const [data, setData] = useState([{}]);
+  const [pdfMode, setPdfMode] = useState(false);
   const [loaders, setLoaders] = useState<Loaders>({
     table: true,
     excel: false,
@@ -33,6 +35,8 @@ export default function DashboardPage() {
   });
   const toast = useRef(null);
   const router = useRouter();
+  const fileUploadRef = useRef<FileUpload | null>(null);
+
 
   useEffect(() => {
     fetchData();
@@ -47,7 +51,7 @@ export default function DashboardPage() {
     try {
       changeLoader('excel', true);
       await api.post('/dashboard/upload-excel', formData);
-      // onUpload();
+      onUpload();
     } catch (error) {
       console.log('Catch Error: ', error);
       toast.current.show({
@@ -76,6 +80,7 @@ export default function DashboardPage() {
       });
     } finally {
       changeLoader('table', false);
+      fileUploadRef.current?.clear(); 
     }
   };
   const handleLogout = () => {
@@ -83,9 +88,6 @@ export default function DashboardPage() {
     Cookies.remove('unsisToken');
     router.push('/entrar');
   };
-
-  const handleExcelDownload = () =>
-    alert('Función de descarga de Excel no implementada.');
 
   const onUpload = () => {
     toast.current.show({
@@ -116,14 +118,9 @@ export default function DashboardPage() {
         maxFileSize={1000000}
         uploadHandler={handleExcelUpload}
         customUpload
-        onUpload={onUpload}
         auto
+        ref={fileUploadRef}
         chooseLabel="Subir Excel"
-      />
-      <Button
-        label="Descargar Excel"
-        icon="pi pi-download"
-        onClick={handleExcelDownload}
       />
       <Button
         label="Exportar PDF"
@@ -132,11 +129,19 @@ export default function DashboardPage() {
         loading={loaders.pdf}
         onClick={async () => {
           changeLoader('pdf', true);
-          await exportToPDF(selectedItems);
+          await exportToPDF(selectedItems, pdfMode);
           changeLoader('pdf', false);
         }}
         disabled={selectedItems.length === 0}
       />
+
+      <div className="card flex justify-content-center flex-col items-center gap-2 w-52">
+        <label className="mr-2">
+          {/* Descargar {pdfMode ? 'Separado'} */}
+          Descargar por separado
+        </label>
+        <InputSwitch checked={pdfMode} onChange={(e) => setPdfMode(e.value)} />
+      </div>
     </div>
   );
 
