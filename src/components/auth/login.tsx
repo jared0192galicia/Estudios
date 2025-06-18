@@ -27,7 +27,7 @@ export default function Login() {
     if (e.key === 'Enter') {
       fetchLogin();
     }
-  };  
+  };
 
   const fetchLogin = async () => {
     try {
@@ -58,6 +58,27 @@ export default function Login() {
   return (
     <main className="">
       <Toast ref={toast}></Toast>
+      <header
+        className={
+          'text-rose-950 h-[170px] w-screen absolute top-0 textwhite' +
+          ' text-4xl flex justify-evenly items-center'
+        }
+      >
+        {/* <div className="flex gap-5 items-center text-3xl"> */}
+        <img
+          src="/unsis.jpg"
+          alt="icon unsis"
+          className="h-[90px] sm:h-[130px]"
+        />
+        <img
+          src="/unsis-leyend.jpg"
+          alt="icon unsis"
+          className="h-[130px] hidden md:block"
+        />
+        {/* <h1 className="hidden md:block">Universidad de la Sierra Sur</h1> */}
+        {/* </div> */}
+        <h2 className="font-serif md:text-2xl">Toxicológicos</h2>
+      </header>
       <section className="flex flex-col items-center justify-center gap-5 h-screen">
         <h1 className="text-4xl">Iniciar sesión</h1>
 
@@ -98,7 +119,10 @@ export default function Login() {
           label="Entrar"
           onClick={fetchLogin}
         />
-      </section>
+      </section>{' '}
+      <footer className="text-gray-700 py-4 text-center text-sm absolute bottom-0 w-full">
+        © {new Date().getFullYear()} Universidad de la Sierra Sur
+      </footer>
     </main>
   );
 }
