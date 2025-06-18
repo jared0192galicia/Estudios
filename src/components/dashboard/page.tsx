@@ -17,6 +17,7 @@ import api from '@/services/axios';
 import { useRouter } from 'next/navigation';
 import { exportToPDF } from '@/services/report';
 import { InputSwitch } from 'primereact/inputswitch';
+import CreateAccount from './createAccount';
 
 type Loaders = {
   table: boolean;
@@ -27,6 +28,7 @@ type Loaders = {
 export default function DashboardPage() {
   const [selectedItems, setSelectedItems] = useState<any>([]);
   const [data, setData] = useState([{}]);
+  const [showFormAccount, setShowFormAccount] = useState<boolean>(false);
   const [pdfMode, setPdfMode] = useState(false);
   const [loaders, setLoaders] = useState<Loaders>({
     table: true,
@@ -36,7 +38,6 @@ export default function DashboardPage() {
   const toast = useRef(null);
   const router = useRouter();
   const fileUploadRef = useRef<FileUpload | null>(null);
-
 
   useEffect(() => {
     fetchData();
@@ -80,7 +81,7 @@ export default function DashboardPage() {
       });
     } finally {
       changeLoader('table', false);
-      fileUploadRef.current?.clear(); 
+      fileUploadRef.current?.clear();
     }
   };
   const handleLogout = () => {
@@ -102,7 +103,12 @@ export default function DashboardPage() {
   const toolbarEnd = (
     <div className="flex gap-2 items-left">
       <Button
-        label="Cerrar sesión"
+        // label="Crear cuenta"
+        icon="pi pi-user-plus"
+        className="p-button-success"
+        onClick={() => setShowFormAccount(true)}
+      />
+      <Button
         icon="pi pi-sign-out"
         className="p-button-danger"
         onClick={handleLogout}
@@ -162,9 +168,12 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4 bg-unsis-black min-h-screen">
+      <CreateAccount
+        setVisible={setShowFormAccount}
+        visible={showFormAccount}
+      ></CreateAccount>
       <Toast ref={toast}></Toast>
       <Toolbar className="mb-4" start={toolbarStart} end={toolbarEnd} />
-
       {/* <div className="h-full overflow-auto"> */}
       <DataTable
         loading={loaders.table}
