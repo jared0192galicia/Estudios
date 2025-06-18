@@ -1,13 +1,11 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance } from 'axios';
 import { getToken } from './getToken';
 import router from 'next/router';
 import Cookies from 'js-cookie';
-
-const baseURL = 'http://localhost:3001/';
-
+import { baseAPI } from '../models/conection';
 // Crea una instancia de Axios
 const api: AxiosInstance = axios.create({
-  baseURL,
+  baseURL: baseAPI,
 });
 
 api.interceptors.request.use(
@@ -32,7 +30,7 @@ api.interceptors.response.use(
   (error: any) => {
     // Handle error responses here
     if (error.response.status === 401) {
-     Cookies.remove('unsisToken');
+      Cookies.remove('unsisToken');
       router.push('/');
     }
 
